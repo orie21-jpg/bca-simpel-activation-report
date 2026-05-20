@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <!-- Mengatur tampilan agar pas di layar HP dan tidak bisa di-zoom (layaknya aplikasi native) -->
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>Report Aktivasi Simpel BCA</title>
+
+    <!-- Meta tags untuk membuatnya menjadi Progressive Web App (PWA) -->
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="theme-color" content="#005C9A"> <!-- Warna Biru BCA -->
+
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body, html {
+            height: 100%;
+            width: 100%;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #f4f6f8;
+            overflow: hidden; /* Mencegah scrolling pada body */
+        }
+
+        .app-bar {
+            background-color: #005C9A; /* Biru khas BCA */
+            color: white;
+            height: 56px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 10;
+        }
+
+        .app-title {
+            font-size: 18px;
+            font-weight: bold;
+            letter-spacing: 0.5px;
+        }
+
+        .webview-container {
+            position: absolute;
+            top: 56px; /* Mulai dari bawah app bar */
+            bottom: 0;
+            left: 0;
+            right: 0;
+            width: 100%;
+            height: calc(100% - 56px); /* Mengisi sisa layar */
+            background-color: white;
+        }
+
+        iframe {
+            width: 100%;
+            height: 100%;
+            border: none;
+            display: block;
+        }
+
+        #loading-overlay {
+            position: absolute;
+            top: 56px;
+            left: 0;
+            width: 100%;
+            height: calc(100% - 56px);
+            background-color: white;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 5;
+            transition: opacity 0.5s ease;
+        }
+
+        /* CSS untuk animasi loading spinner */
+        .spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid #005C9A;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 1s linear infinite;
+            margin-bottom: 15px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loading-text {
+            color: #555;
+            font-size: 14px;
+        }
+    </style>
+</head>
+<body>
+
+    <!-- App Bar (Header Aplikasi) -->
+    <div class="app-bar">
+        <div class="app-title">Report Aktivasi Simpel BCA</div>
+    </div>
+
+    <!-- Layar Loading (Akan hilang setelah iframe dimuat) -->
+    <div id="loading-overlay">
+        <div class="spinner"></div>
+        <div class="loading-text">Memuat Data Server...</div>
+    </div>
+
+    <!-- Kontainer Aplikasi Google Apps Script -->
+    <div class="webview-container">
+        <!--
+            Ini adalah iframe. Ia berfungsi persis seperti WebView di Android Studio.
+            URL di bawah ini adalah URL Google Apps Script kamu.
+            onload="hideLoading()" akan mematikan layar loading saat web sudah selesai dimuat.
+        -->
+        <iframe
+            id="gasFrame"
+            src="https://script.google.com/macros/s/AKfycby4NPb3rP54JX3ZGXGwSdByU6yKHuv6LaFJRK0t7tOxlvMm_KVie_QvKRsp8dl-xGA-/exec"
+            allowfullscreen
+            onload="hideLoading()">
+        </iframe>
+    </div>
+
+    <script>
+        // Fungsi untuk menyembunyikan layar loading
+        function hideLoading() {
+            var overlay = document.getElementById('loading-overlay');
+            // Membuat efek fade out
+            overlay.style.opacity = '0';
+
+            // Menghapus elemen dari layar setelah animasi selesai (500ms)
+            setTimeout(function() {
+                overlay.style.display = 'none';
+            }, 500);
+        }
+
+        // Opsional: Timeout fallback.
+        // Jika internet lambat dan Google Script belum merespon setelah 8 detik, hilangkan loading agar layar tidak putih terus.
+        setTimeout(hideLoading, 8000);
+    </script>
+</body>
+</html>
